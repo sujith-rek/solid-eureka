@@ -1,8 +1,8 @@
 import requests
-from var_init import DEV_URL, RELEASE_URL, TEST_MAIL
+from env_variables import DEV_URL, RELEASE_URL, TEST_MAIL
+from utils import fetch_users
 
 TASK_ID = "api-6"
-TASK_ENDPOINT = "users?offset={}&limit={}"
 
 headers = {
     "Authorization": f"Bearer {TEST_MAIL}",
@@ -10,20 +10,7 @@ headers = {
 }
 
 
-def fetch_users(url : str, offset : int, limit : int) -> dict:
-    """
-    Fetches the users from the given url
-    :param url:
-    :param offset:
-    :param limit:
-    :return:
-    """
-    response = requests.get(url + TASK_ENDPOINT.format(offset, limit), headers=headers)
-    response.raise_for_status()  # Raise an error for bad status codes
-    return response.json()
-
-
-def test_endpoint(base_url):
+def test_api6(base_url, headers):
     """
     Endpoint returns the users wrt the offset and limit
     if offset is greater than the total number of users, it should return an empty list
@@ -31,10 +18,10 @@ def test_endpoint(base_url):
     :return:
     """
     try:
-        initial_response = fetch_users(base_url, 0, 5)
+        initial_response = fetch_users(base_url, headers, 0, 5)
         total_count = initial_response["meta"]["total"]
 
-        final_response = fetch_users(base_url, total_count + 1, 5)
+        final_response = fetch_users(base_url, headers, total_count + 1, 5)
         assert len(final_response["users"]) == 0, "Expected no users in the final response"
         print(f"Test passed for {base_url}")
     except requests.exceptions.RequestException as e:
@@ -44,5 +31,5 @@ def test_endpoint(base_url):
 
 
 if __name__ == "__main__":
-    test_endpoint(RELEASE_URL)
-    test_endpoint(DEV_URL)
+    test_api6(DEV_URL, headers)
+    test_api6(RELEASE_URL, headers)

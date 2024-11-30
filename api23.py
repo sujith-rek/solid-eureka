@@ -1,8 +1,8 @@
 import requests
-from var_init import DEV_URL, RELEASE_URL, TEST_MAIL
+from env_variables import DEV_URL, RELEASE_URL, TEST_MAIL
+from utils import fetch_users
 
 TASK_ID = "api-23"
-ALL_USERS = "users?offset={}&limit={}"
 TASK_ENDPOINT = "users/{}"
 OFFSET = 0
 LIMIT = 100
@@ -11,12 +11,6 @@ headers = {
     "Authorization": f"Bearer {TEST_MAIL}",
     "X-Task-Id": TASK_ID
 }
-
-
-def fetch_users(url, offset, limit):
-    response = requests.get(url + ALL_USERS.format(offset, limit), headers=headers)
-    response.raise_for_status()  # Raise an error for bad status codes
-    return response.json()
 
 
 def fetch_user(url, user_id):
@@ -45,8 +39,11 @@ def test_endpoint(base_url, users):
         print(f"Assertion failed: {e}")
 
 
+def test_api23(base_url, headers):
+    users = fetch_users(base_url, headers, OFFSET, LIMIT)
+    test_endpoint(base_url, users)
+
+
 if __name__ == "__main__":
-    release_users = fetch_users(RELEASE_URL, OFFSET, LIMIT)
-    dev_users = fetch_users(DEV_URL, OFFSET, LIMIT)
-    test_endpoint(RELEASE_URL, release_users)
-    test_endpoint(DEV_URL, dev_users)
+    test_api23(RELEASE_URL, headers)
+    test_api23(DEV_URL, headers)
