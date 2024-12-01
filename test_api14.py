@@ -1,0 +1,1 @@
+# Deleting a item should delete only that item, check for cart items before and after deletion, should be 1 less

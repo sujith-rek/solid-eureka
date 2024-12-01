@@ -1,0 +1,1 @@
+# Clearing user cart should make total 0 and items empty

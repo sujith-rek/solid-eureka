@@ -1,6 +1,7 @@
 import requests
+import pytest
 from env_variables import DEV_URL, RELEASE_URL, TEST_MAIL
-from utils import fetch_users
+from utils import get_all_users
 
 TASK_ID = "api-21"
 
@@ -9,8 +10,8 @@ headers = {
     "X-Task-Id": TASK_ID
 }
 
-
-def test_api21(base_url, headers):
+@pytest.mark.parametrize("base_url", [RELEASE_URL, DEV_URL])
+def test_api21(base_url):
     offset = 0
     limit = 5
     """
@@ -20,22 +21,17 @@ def test_api21(base_url, headers):
     :return:
     """
     try:
-        initial_response = fetch_users(base_url, headers, offset, limit)
+        initial_response = get_all_users(base_url, headers, offset, limit)
         count = initial_response["meta"]["total"]
 
         if count == 0:
             assert len(initial_response["users"]) == 0, "Expected no users in the initial response"
         elif count > limit:
-            final_response = fetch_users(base_url, headers, offset, count)
+            final_response = get_all_users(base_url, headers, offset, count)
             assert len(final_response["users"]) == count, "Expected all users in the final response"
         print(f"Test passed for {base_url}")
 
     except requests.exceptions.RequestException as e:
-        print(f"Request failed: {e}")
+        pytest.fail(f"Request failed: {e}")
     except AssertionError as e:
-        print(f"Assertion failed: {e}")
-
-
-if __name__ == "__main__":
-    test_api21(DEV_URL, headers)
-    test_api21(RELEASE_URL, headers)
+        pytest.fail(f"Assertion failed: {e}")

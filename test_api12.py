@@ -1,7 +1,6 @@
 import requests
-
 from env_variables import DEV_URL, RELEASE_URL, TEST_MAIL
-from utils import fetch_users, fetch_games
+from utils import get_all_users, get_all_games
 
 TASK_ID = "api-12"
 headers = {
