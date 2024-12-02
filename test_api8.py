@@ -1,5 +1,5 @@
-import requests
 import pytest
+
 from env_variables import DEV_URL, RELEASE_URL, TEST_MAIL
 from utils import get_all_users, get_user_wishlist, get_all_games, add_game_to_wishlist, delete_game_from_wishlist
 

@@ -30,3 +30,4 @@ def test_api17(base_url):
             create_user_order(base_url, headers, user_id, [{"item_uuid": game_id, "quantity": 1}])
     user_orders = get_user_orders(base_url, headers, user_id, limit=1)
     assert len(user_orders["orders"]) == 1, "Failed to get limited orders"
+    print(f"Test passed for {base_url}")

@@ -16,6 +16,21 @@ USER_ORDER_CREATE = "users/{}/orders"
 USER_LOGIN_URL = "users/login"
 USER_ADD = "users"
 USER_UPDATE = "users/{}"
+ALL_CATEGORIES = "categories?offset={}&limit={}"
+GAMES_BY_CATEGORY = "categories/{}/games?offset={}&limit={}"
+
+
+def get_all_game_categories(base_url, headers, offset=0, limit=100):
+    response = requests.get(f"{base_url}/{ALL_CATEGORIES.format(offset, limit)}", headers=headers)
+    assert response.status_code == 200, "Failed to fetch categories, status code: {}".format(response.status_code)
+    return response.json()
+
+
+def get_games_by_category(base_url, headers, category_id, offset=0, limit=100):
+    response = requests.get(f"{base_url}/{GAMES_BY_CATEGORY.format(category_id, offset, limit)}", headers=headers)
+    assert response.status_code == 200, "Failed to fetch games for category {}, status code: {}".format(category_id,
+                                                                                                        response.status_code)
+    return response.json()
 
 
 def delete_game_from_wishlist(base_url, headers, user_id, game_id):
@@ -133,3 +148,16 @@ def update_user(url: str, headers: dict, user_id: str, name: str = None, nicknam
     response = requests.patch(f"{url}/{USER_UPDATE.format(user_id)}", headers=headers, json=data)
     response.raise_for_status()
     return response
+
+
+def clear_user_cart(url: str, headers: dict, user_id: str):
+    response = requests.post(f"{url}/{USER_CART_CLEAR_URL.format(user_id)}", headers=headers)
+    response.raise_for_status()  # Raise an error for bad status codes
+    return response.json()
+
+
+def remove_game_from_cart(url: str, headers: dict, user_id: str, game_id: str):
+    response = requests.post(f"{url}/{USER_CART_REMOVE_URL.format(user_id)}", headers=headers,
+                             json={"item_uuid": game_id})
+    response.raise_for_status()  # Raise an error for bad status codes
+    return response.json()

@@ -1,9 +1,10 @@
-import requests
-import pytest
-from env_variables import DEV_URL, RELEASE_URL, TEST_MAIL
-from utils import get_user_with_id, create_random_user, generate_random_email, generate_random_nickname
 import random
 import time
+
+import pytest
+
+from env_variables import DEV_URL, RELEASE_URL, TEST_MAIL
+from utils import get_user_with_id, create_random_user, generate_random_email, generate_random_nickname
 
 TASK_ID = "api-3"
 headers = {
@@ -11,7 +12,6 @@ headers = {
     "X-Task-Id": TASK_ID
 }
 
-TASK_URL = "users"
 
 
 @pytest.mark.parametrize("base_url", [RELEASE_URL, DEV_URL])

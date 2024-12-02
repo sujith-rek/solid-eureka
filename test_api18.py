@@ -1,5 +1,4 @@
-import requests
-from env_variables import DEV_URL, RELEASE_URL, TEST_MAIL
+from env_variables import TEST_MAIL
 
 TASK_ID = "api-18"
 headers = {
