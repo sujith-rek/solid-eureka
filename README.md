@@ -116,3 +116,10 @@ For Windows
 ## Task 20
 - Unable to find any
 
+## EDIT
+## Task 19
+### Get Payment
+- DEV and RELEASE responses are different. Don't know why. But it should be same.
+
+### NOTE
+- When running if we run into `500` test fails
