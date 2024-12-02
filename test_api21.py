@@ -1,5 +1,6 @@
-import requests
 import pytest
+import requests
+
 from env_variables import DEV_URL, RELEASE_URL, TEST_MAIL
 from utils import get_all_users
 
@@ -9,6 +10,7 @@ headers = {
     "Authorization": f"Bearer {TEST_MAIL}",
     "X-Task-Id": TASK_ID
 }
+
 
 @pytest.mark.parametrize("base_url", [RELEASE_URL, DEV_URL])
 def test_api21(base_url):
