@@ -13,7 +13,6 @@ headers = {
 }
 
 
-
 @pytest.mark.parametrize("base_url", [RELEASE_URL, DEV_URL])
 def test_api3(base_url):
     random.seed(time.time())
