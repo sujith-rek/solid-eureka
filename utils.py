@@ -12,7 +12,11 @@ USER_CART_REMOVE_URL = "users/{}/cart/remove"
 USER_CART_CLEAR_URL = "users/{}/cart/clear"
 USER_CART_CHANGE_URL = "users/{}/cart/change"
 USER_ORDERS = "users/{}/orders?offset={}&limit={}"
+ORDER_BY_ID = "orders/{}"
 USER_ORDER_CREATE = "users/{}/orders"
+PATCH_ORDER_STATUS = "orders/{}/status"
+PAYMENT_CREATE = "users/{}/payments"
+USER_PAYMENT = "users/{}/payments?offset={}&limit={}"
 USER_LOGIN_URL = "users/login"
 USER_ADD = "users"
 USER_UPDATE = "users/{}"
@@ -124,8 +128,7 @@ def create_user_order(url: str, headers: dict, user_id: str, items: list):
         assert "quantity" in item, "quantity not found in item"
     response = requests.post(f"{url}/{USER_ORDER_CREATE.format(user_id)}", headers=headers,
                              json={"items": items})
-    response.raise_for_status()  # Raise an error for bad status codes
-    return response.json()
+    return response
 
 
 def get_user_orders(url: str, headers: dict, user_id: str, offset: int = 0, limit: int = 100) -> dict:
@@ -161,3 +164,27 @@ def remove_game_from_cart(url: str, headers: dict, user_id: str, game_id: str):
                              json={"item_uuid": game_id})
     response.raise_for_status()  # Raise an error for bad status codes
     return response.json()
+
+
+def patch_order_status(url: str, headers: dict, order_id: str):
+    response = requests.patch(f"{url}/{PATCH_ORDER_STATUS.format(order_id)}", headers=headers,
+                              json={"status": "canceled"})
+    return response
+
+
+def get_order_by_id(url: str, headers: dict, order_id: str):
+    response = requests.get(f"{url}/{ORDER_BY_ID.format(order_id)}", headers=headers)
+    response.raise_for_status()  # Raise an error for bad status codes
+    return response.json()
+
+
+def get_user_payments(url: str, headers: dict, user_id: str, offset: int = 0, limit: int = 100):
+    response = requests.get(f"{url}/{USER_PAYMENT.format(user_id, offset, limit)}", headers=headers)
+    response.raise_for_status()  # Raise an error for bad status codes
+    return response.json()
+
+
+def create_new_payment(url: str, headers: dict, user_id: str, order_id: str, method: str):
+    response = requests.post(f"{url}/{PAYMENT_CREATE.format(user_id)}", headers=headers,
+                             json={"order_uuid": order_id, "payment_method": method})
+    return response
